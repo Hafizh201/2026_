@@ -25,7 +25,9 @@ export async function GET() {
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
 
-    return NextResponse.json({ authenticated: true }, { status: 200 });
+    const tokenNumber = session.value.match(/(\d+)$/)?.[1] ?? '—';
+
+    return NextResponse.json({ authenticated: true, tokenNumber }, { status: 200 });
   } catch (error) {
     console.error('[AUTH_ME]', error);
     return NextResponse.json({ authenticated: false }, { status: 503 });

@@ -8,6 +8,10 @@ interface TokenRecord extends RowDataPacket {
   sudah_memilih: number;
 }
 
+interface ExistingVoteRecord extends RowDataPacket {
+  candidate_id: number;
+}
+
 export async function POST(request: Request) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get('auth_session')?.value ?? '';
@@ -38,6 +42,25 @@ export async function POST(request: Request) {
       if (!tokenRecord) {
         await connection.rollback();
         return NextResponse.json({ message: 'Sesi pemilih tidak valid.' }, { status: 401 });
+      }
+
+      const [existingVotes] = await connection.execute<ExistingVoteRecord[]>(
+        'SELECT candidate_id FROM votes WHERE token = ? LIMIT 1 FOR UPDATE',
+        [sessionToken]
+      );
+
+      if (existingVotes.length > 0) {
+        if (Number(tokenRecord.sudah_memilih) !== 1) {
+          await connection.execute<ResultSetHeader>(
+            'UPDATE token_akses SET sudah_memilih = 1 WHERE token = ?',
+            [sessionToken]
+          );
+        }
+        await connection.commit();
+        return NextResponse.json(
+          { success: false, alreadyRecorded: true, message: 'Suara untuk token ini sudah tercatat dan tidak dapat diubah.' },
+          { status: 409 }
+        );
       }
 
       if (Number(tokenRecord.sudah_memilih) === 1) {

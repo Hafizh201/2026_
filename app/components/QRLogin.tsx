@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import jsQR from 'jsqr';
+import { SchoolLogo } from './SchoolLogo';
 import { AlertCircle, CheckCircle2, QrCode, ShieldCheck } from 'lucide-react';
 
 interface QRLoginProps {
-  onLoginSuccess: () => void;
+  onLoginSuccess: () => Promise<void>;
 }
 
 interface ModalState {
@@ -16,6 +17,7 @@ interface ModalState {
 
 export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isEnteringVote, setIsEnteringVote] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [modal, setModal] = useState<ModalState>({ isOpen: false, type: null, message: '' });
   
@@ -54,12 +56,11 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
         setModal({
           isOpen: true,
           type: 'success',
-          message: data.message || 'Akses Diberikan. Memuat sistem...',
+          message: 'QR terverifikasi. Surat suara sedang disiapkan.',
         });
-
-        setTimeout(() => {
-          onLoginSuccess();
-        }, 1200);
+        setIsEnteringVote(true);
+        await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+        await onLoginSuccess();
       } else {
         setModal({
           isOpen: true,
@@ -156,8 +157,8 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
       <header className="site-header">
         <div className="site-header-inner">
           <div className="brand-lockup">
-            <span className="brand-symbol"><QrCode size={20} strokeWidth={1.8} /></span>
-            <span className="brand-copy"><span className="brand-name">PEMILOS</span><span className="brand-school">SMPIT Abu Bakar Fullday School</span></span>
+            <SchoolLogo />
+            <span className="brand-copy"><span className="brand-name">Pilketos 2025</span><span className="brand-school">SMPIT Abu Bakar Fullday School</span></span>
           </div>
           <div className="session-indicator"><ShieldCheck size={15} /><span>AKSES PEMILIH</span></div>
         </div>
@@ -191,7 +192,7 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
 
       <footer className="site-footer"><span>PILKETOS 2025</span><span>PEMILIHAN KETUA OSIS</span><span>AKSES AMAN</span></footer>
 
-      {modal.isOpen && <div className="auth-modal-backdrop"><section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title"><div className={`auth-modal-symbol ${modal.type === 'error' || modal.type === 'permission' ? 'is-error' : 'is-success'}`}>{modal.type === 'error' || modal.type === 'permission' ? <AlertCircle size={27} /> : <CheckCircle2 size={27} />}</div><h2 id="auth-modal-title">{modal.type === 'success' ? 'Akses diberikan' : modal.type === 'permission' ? 'Kamera belum tersedia' : 'QR belum terverifikasi'}</h2><p>{modal.message}</p>{(modal.type === 'error' || modal.type === 'permission') && <button type="button" onClick={closeModal} className="confirm-button">Tutup dan coba lagi</button>}</section></div>}
+      {modal.isOpen && <div className={`auth-modal-backdrop ${modal.type === 'error' || isEnteringVote ? 'is-dialog' : ''}`}><section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title"><div className={`auth-modal-symbol ${modal.type === 'error' || modal.type === 'permission' ? 'is-error' : 'is-success'}`}>{modal.type === 'error' || modal.type === 'permission' ? <AlertCircle size={27} /> : <CheckCircle2 size={27} />}</div>{isEnteringVote && <span className="auth-modal-loading" role="status" aria-label="Memuat surat suara" />}<h2 id="auth-modal-title">{modal.type === 'success' ? 'Akses diberikan' : modal.type === 'permission' ? 'Kamera belum tersedia' : 'QR belum terverifikasi'}</h2><p>{modal.message}</p>{(modal.type === 'error' || modal.type === 'permission') && <button type="button" onClick={closeModal} className="confirm-button">Tutup dan coba lagi</button>}</section></div>}
     </main>
   );
 };
