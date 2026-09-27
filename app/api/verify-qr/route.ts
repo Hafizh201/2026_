@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { type ResultSetHeader, type RowDataPacket } from 'mysql2';
+import { type RowDataPacket } from 'mysql2';
 import { db } from '../../../lib/db';
 
 interface TokenRecord extends RowDataPacket {
@@ -39,19 +39,6 @@ export async function POST(request: Request) {
     }
 
     if (Number(tokenRecord.sudah_memilih) === 1) {
-      console.log('[VERIFY_QR]', { timestamp, token, status: 'DITOLAK', reason: 'TOKEN_SUDAH_DIGUNAKAN' });
-      return NextResponse.json(
-        { success: false, message: 'Token sudah pernah digunakan' },
-        { status: 403 }
-      );
-    }
-
-    const [updateResult] = await db.execute<ResultSetHeader>(
-      'UPDATE token_akses SET sudah_memilih = 1 WHERE token = ? AND sudah_memilih = 0',
-      [token]
-    );
-
-    if (updateResult.affectedRows !== 1) {
       console.log('[VERIFY_QR]', { timestamp, token, status: 'DITOLAK', reason: 'TOKEN_SUDAH_DIGUNAKAN' });
       return NextResponse.json(
         { success: false, message: 'Token sudah pernah digunakan' },

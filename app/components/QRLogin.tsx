@@ -2,23 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import jsQR from 'jsqr';
-
-// SVG Inline (Pengganti lucide-react jika belum diinstal)
-const QrCode = ({ className, size = 24 }: { className?: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <rect width="5" height="5" x="3" y="3" rx="1" /><rect width="5" height="5" x="16" y="3" rx="1" /><rect width="5" height="5" x="3" y="16" rx="1" /><path d="M21 16h-3a2 2 0 0 0-2 2v3" /><path d="M21 21v.01" /><path d="M12 7v3a2 2 0 0 1-2 2H7" /><path d="M3 12h.01" /><path d="M12 3h.01" /><path d="M12 16v.01" /><path d="M16 12h1" /><path d="M21 12v.01" /><path d="M12 21v-1" />
-  </svg>
-);
-const AlertCircle = ({ className, size = 24 }: { className?: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />
-  </svg>
-);
-const CheckCircle = ({ className, size = 24 }: { className?: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-  </svg>
-);
+import { AlertCircle, CheckCircle2, QrCode, ShieldCheck } from 'lucide-react';
 
 interface QRLoginProps {
   onLoginSuccess: () => void;
@@ -32,6 +16,7 @@ interface ModalState {
 
 export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isCameraReady, setIsCameraReady] = useState(false);
   const [modal, setModal] = useState<ModalState>({ isOpen: false, type: null, message: '' });
   
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -52,6 +37,7 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
 
   const processToken = async (token: string) => {
     stopCamera(); // Hentikan pemindaian saat memproses
+    setIsCameraReady(false);
     setIsProcessing(true);
     setModal({ isOpen: false, type: null, message: '' });
 
@@ -81,7 +67,7 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
           message: data.message || 'Token tidak valid.',
         });
       }
-    } catch (error) {
+    } catch {
       setModal({
         isOpen: true,
         type: 'error',
@@ -114,7 +100,6 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
         });
 
         if (code && code.data) {
-          console.log('[CLIENT LOG] QR Code berhasil dibaca:', code.data);
           processToken(code.data);
           return; // Hentikan loop tick saat menemukan QR
         }
@@ -133,10 +118,12 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.setAttribute("playsinline", "true");
-        videoRef.current.play();
+        await videoRef.current.play();
+        setIsCameraReady(true);
         animationFrameId.current = requestAnimationFrame(tick);
       }
-    } catch (err) {
+    } catch {
+      setIsCameraReady(false);
       setModal({
         isOpen: true,
         type: 'permission',
@@ -147,10 +134,16 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
 
   useEffect(() => {
     // Jalankan kamera saat komponen dimuat dan tidak ada modal yang terbuka
+    let startTimer: number | undefined;
     if (!modal.isOpen && !isProcessing) {
-      startCamera();
+      startTimer = window.setTimeout(() => { void startCamera(); }, 0);
     }
-    return () => stopCamera();
+    return () => {
+      if (startTimer) window.clearTimeout(startTimer);
+      stopCamera();
+    };
+    // Scanner lifecycle is intentionally restarted only when modal/processing state changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modal.isOpen, isProcessing]);
 
   const closeModal = () => {
@@ -159,79 +152,46 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] font-[Poppins] flex items-center justify-center p-4 text-white">
-      
-      {/* Elemen Video & Canvas Disembunyikan Sempurna */}
-      <video ref={videoRef} className="hidden" muted playsInline />
-      <canvas ref={canvasRef} className="hidden" />
-
-      <div className="relative w-full max-w-md bg-[#1A1A1A] border border-zinc-800 rounded-3xl p-10 flex flex-col items-center shadow-2xl overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-indigo-500/20 blur-[60px] rounded-full pointer-events-none"></div>
-
-        <div className="mb-8 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800 shadow-inner">
-          <QrCode
-            size={64}
-            className={`text-zinc-400 ${isProcessing ? 'animate-pulse text-indigo-400' : ''}`}
-          />
+    <main className="qr-shell">
+      <header className="site-header">
+        <div className="site-header-inner">
+          <div className="brand-lockup">
+            <span className="brand-symbol"><QrCode size={20} strokeWidth={1.8} /></span>
+            <span className="brand-copy"><span className="brand-name">PEMILOS</span><span className="brand-school">SMPIT Abu Bakar Fullday School</span></span>
+          </div>
+          <div className="session-indicator"><ShieldCheck size={15} /><span>AKSES PEMILIH</span></div>
         </div>
+      </header>
 
-        <h1 className="text-2xl font-semibold tracking-tight mb-2 text-center">
-          Otentikasi Sistem
-        </h1>
-        <p className="text-sm text-zinc-400 text-center mb-8 leading-relaxed">
-          Sistem siap. Arahkan kode QR Anda tepat di depan kamera perangkat ini.
-        </p>
+      <div className="qr-layout">
+        <section className="qr-copy">
+          <p className="eyebrow">PILKETOS 2025 <span>·</span> GERBANG PEMILIHAN</p>
+          <h1>Suara Anda,<br /><span>dimulai di sini.</span></h1>
+          <p>Arahkan kode QR akses ke bingkai pemindai untuk membuka surat suara digital.</p>
+          <ol className="qr-steps">
+            <li><span className="qr-step-number">01</span><span>Pastikan kode QR terlihat jelas dan tidak terpotong.</span></li>
+            <li><span className="qr-step-number">02</span><span>Jaga jarak perangkat sekitar 15–25 cm dari kamera.</span></li>
+            <li><span className="qr-step-number">03</span><span>Surat suara terbuka setelah akses berhasil diverifikasi.</span></li>
+          </ol>
+        </section>
 
-        <div className="flex items-center space-x-3 bg-zinc-900/50 px-5 py-3 rounded-full border border-zinc-800 w-full justify-center transition-colors">
-          {isProcessing ? (
-            <>
-              <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              <span className="text-sm text-indigo-400 ml-2 font-medium">Memverifikasi Data...</span>
-            </>
-          ) : (
-            <>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-              <span className="text-sm text-zinc-400 font-medium tracking-wide">Kamera Aktif & Memindai...</span>
-            </>
-          )}
-        </div>
+        <section className="qr-panel" aria-label="Pemindai kode QR">
+          <div className="camera-frame">
+            <video ref={videoRef} className="camera-video" muted playsInline aria-label="Pratinjau kamera pemindai QR" />
+            <canvas ref={canvasRef} className="hidden" />
+            <div className="scan-guide" aria-hidden="true" />
+            <span className="camera-hint">POSISIKAN KODE DI DALAM BINGKAI</span>
+          </div>
+          <div className="qr-panel-footer">
+            <span className={`camera-status ${isProcessing ? 'is-processing' : ''}`} aria-live="polite"><span className="camera-status-dot" />{isProcessing ? 'Memverifikasi kode...' : isCameraReady ? 'Kamera aktif · Memindai' : 'Menyiapkan kamera...'}</span>
+            <span className="qr-encrypted"><ShieldCheck size={13} /> AKSES TERLINDUNGI</span>
+          </div>
+        </section>
       </div>
 
-      {modal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
-          <div className="w-full max-w-sm bg-[#1A1A1A] border border-zinc-800 rounded-2xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex flex-col items-center text-center">
-              
-              {modal.type === 'error' || modal.type === 'permission' ? (
-                <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
-                  <AlertCircle size={32} className="text-red-500" />
-                </div>
-              ) : (
-                <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle size={32} className="text-green-500" />
-                </div>
-              )}
+      <footer className="site-footer"><span>PILKETOS 2025</span><span>PEMILIHAN KETUA OSIS</span><span>AKSES AMAN</span></footer>
 
-              <h3 className="text-xl font-semibold mb-2">
-                {modal.type === 'success' ? 'Akses Diberikan' : modal.type === 'permission' ? 'Akses Kamera Ditolak' : 'Akses Ditolak'}
-              </h3>
-
-              <p className="text-sm text-zinc-400 mb-6">{modal.message}</p>
-
-              {(modal.type === 'error' || modal.type === 'permission') && (
-                <button
-                  onClick={closeModal}
-                  className="w-full bg-white text-black font-semibold py-3 px-4 rounded-xl hover:bg-zinc-200 transition-colors"
-                >
-                  Tutup & Coba Lagi
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      {modal.isOpen && <div className="auth-modal-backdrop"><section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title"><div className={`auth-modal-symbol ${modal.type === 'error' || modal.type === 'permission' ? 'is-error' : 'is-success'}`}>{modal.type === 'error' || modal.type === 'permission' ? <AlertCircle size={27} /> : <CheckCircle2 size={27} />}</div><h2 id="auth-modal-title">{modal.type === 'success' ? 'Akses diberikan' : modal.type === 'permission' ? 'Kamera belum tersedia' : 'QR belum terverifikasi'}</h2><p>{modal.message}</p>{(modal.type === 'error' || modal.type === 'permission') && <button type="button" onClick={closeModal} className="confirm-button">Tutup dan coba lagi</button>}</section></div>}
+    </main>
   );
 };
