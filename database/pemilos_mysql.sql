@@ -24,8 +24,10 @@ CREATE TABLE IF NOT EXISTS votes (
   token VARCHAR(255) NOT NULL,
   candidate_id INT UNSIGNED NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  is_synced TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   UNIQUE KEY unique_vote_token (token),
+  KEY idx_votes_sync (is_synced, id),
   CONSTRAINT fk_votes_token FOREIGN KEY (token) REFERENCES token_akses (token),
   CONSTRAINT fk_votes_candidate FOREIGN KEY (candidate_id) REFERENCES candidates (id)
 ) ENGINE = InnoDB;

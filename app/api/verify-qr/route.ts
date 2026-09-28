@@ -6,6 +6,7 @@ import { db } from '../../../lib/db';
 interface TokenRecord extends RowDataPacket {
   token: string;
   sudah_memilih: number;
+  has_vote: number;
 }
 
 export async function POST(request: Request) {
@@ -25,7 +26,9 @@ export async function POST(request: Request) {
     }
 
     const [rows] = await db.execute<TokenRecord[]>(
-      'SELECT * FROM token_akses WHERE token = ?',
+      `SELECT token, sudah_memilih,
+        EXISTS (SELECT 1 FROM votes WHERE votes.token = token_akses.token) AS has_vote
+      FROM token_akses WHERE token = ? LIMIT 1`,
       [token]
     );
     const tokenRecord = rows[0];
@@ -38,7 +41,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (Number(tokenRecord.sudah_memilih) === 1) {
+    if (Number(tokenRecord.sudah_memilih) === 1 || Number(tokenRecord.has_vote) === 1) {
       console.log('[VERIFY_QR]', { timestamp, token, status: 'DITOLAK', reason: 'TOKEN_SUDAH_DIGUNAKAN' });
       return NextResponse.json(
         { success: false, message: 'Token sudah pernah digunakan' },

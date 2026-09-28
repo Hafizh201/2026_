@@ -164,27 +164,23 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
         </div>
       </header>
 
-      <div className="qr-layout">
-        <section className="qr-copy">
+      <div className="qr-layout qr-layout-simple">
+        <section className="qr-copy qr-copy-simple">
           <p className="eyebrow">PILKETOS 2025 <span>·</span> GERBANG PEMILIHAN</p>
-          <h1>Suara Anda,<br /><span>dimulai di sini.</span></h1>
-          <p>Arahkan kode QR akses ke bingkai pemindai untuk membuka surat suara digital.</p>
-          <ol className="qr-steps">
-            <li><span className="qr-step-number">01</span><span>Pastikan kode QR terlihat jelas dan tidak terpotong.</span></li>
-            <li><span className="qr-step-number">02</span><span>Jaga jarak perangkat sekitar 15–25 cm dari kamera.</span></li>
-            <li><span className="qr-step-number">03</span><span>Surat suara terbuka setelah akses berhasil diverifikasi.</span></li>
-          </ol>
+          <h1>Silakan pindai<br /><span>QR pemilih.</span></h1>
+          <p>Gunakan kode QR yang diberikan panitia untuk membuka surat suara digital.</p>
         </section>
 
-        <section className="qr-panel" aria-label="Pemindai kode QR">
-          <div className="camera-frame">
-            <video ref={videoRef} className="camera-video" muted playsInline aria-label="Pratinjau kamera pemindai QR" />
-            <canvas ref={canvasRef} className="hidden" />
-            <div className="scan-guide" aria-hidden="true" />
-            <span className="camera-hint">POSISIKAN KODE DI DALAM BINGKAI</span>
+        <section className="qr-panel qr-panel-simple" aria-label="Pemindai kode QR">
+          <div className="qr-scan-instructions">
+            <span className="qr-scan-icon" aria-hidden="true"><QrCode size={30} strokeWidth={1.7} /></span>
+            <h2>Siap memindai</h2>
+            <p>Arahkan kode QR ke kamera perangkat.</p>
           </div>
+          <video ref={videoRef} className="camera-video camera-video-hidden" muted playsInline aria-hidden="true" />
+          <canvas ref={canvasRef} className="hidden" />
           <div className="qr-panel-footer">
-            <span className={`camera-status ${isProcessing ? 'is-processing' : ''}`} aria-live="polite"><span className="camera-status-dot" />{isProcessing ? 'Memverifikasi kode...' : isCameraReady ? 'Kamera aktif · Memindai' : 'Menyiapkan kamera...'}</span>
+            <span className={`camera-status ${isProcessing ? 'is-processing' : ''}`} aria-live="polite"><span className="camera-status-dot" />{isProcessing ? 'Memverifikasi kode...' : isCameraReady ? 'Pemindai aktif' : 'Menyiapkan pemindai...'}</span>
             <span className="qr-encrypted"><ShieldCheck size={13} /> AKSES TERLINDUNGI</span>
           </div>
         </section>

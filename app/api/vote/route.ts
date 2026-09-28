@@ -45,11 +45,14 @@ export async function POST(request: Request) {
       }
 
       const [existingVotes] = await connection.execute<ExistingVoteRecord[]>(
-        'SELECT candidate_id FROM votes WHERE token = ? LIMIT 1 FOR UPDATE',
+        'SELECT candidate_id FROM votes WHERE token = ? FOR UPDATE',
         [sessionToken]
       );
 
       if (existingVotes.length > 0) {
+        if (existingVotes.length > 1) {
+          console.error('[VOTE_DUPLICATE_ROWS]', { rowCount: existingVotes.length });
+        }
         if (Number(tokenRecord.sudah_memilih) !== 1) {
           await connection.execute<ResultSetHeader>(
             'UPDATE token_akses SET sudah_memilih = 1 WHERE token = ?',
@@ -91,6 +94,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: 'Suara berhasil disimpan.' }, { status: 200 });
     } catch (error) {
       await connection.rollback();
+      const errorCode = typeof error === 'object' && error !== null && 'code' in error
+        ? (error as { code?: unknown }).code
+        : undefined;
+      if (errorCode === 'ER_DUP_ENTRY') {
+        return NextResponse.json(
+          { success: false, alreadyRecorded: true, message: 'Suara untuk token ini sudah tercatat dan tidak dapat diubah.' },
+          { status: 409 }
+        );
+      }
       console.error('[VOTE_TRANSACTION]', error);
       return NextResponse.json({ message: 'Suara belum dapat disimpan.' }, { status: 500 });
     } finally {

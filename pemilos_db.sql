@@ -1,0 +1,367 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Sep 28, 2026 at 04:49 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `pemilos_db`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `candidates`
+--
+
+CREATE TABLE `candidates` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `nama` varchar(150) NOT NULL,
+  `photo` varchar(255) NOT NULL,
+  `ketua` varchar(150) NOT NULL,
+  `wakil` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `candidates`
+--
+
+INSERT INTO `candidates` (`id`, `nama`, `photo`, `ketua`, `wakil`) VALUES
+(1, 'Raisya - Fathiyyah', '/images/1.JPG', 'Raisya Zhafira Putri', 'Fathiyyah Hafidzah'),
+(2, 'Visya - Aza', '/images/2.JPG', 'Ravisya Zahrasifa Lesmana', 'Azarine Zalika Raihanah'),
+(3, 'Akmal - Fatih', '/images/3.JPG', 'Naruna Akmal Kuntadi', 'Ahmad Fatih Kamil');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `token_akses`
+--
+
+CREATE TABLE `token_akses` (
+  `token` varchar(255) NOT NULL,
+  `sudah_memilih` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `token_akses`
+--
+
+INSERT INTO `token_akses` (`token`, `sudah_memilih`) VALUES
+('https://me-qr.com/PGgHRqPW', 1),
+('PEMILOS-2026-0001', 0),
+('PEMILOS-2026-0002', 0),
+('PEMILOS-2026-0003', 0),
+('PEMILOS-2026-0004', 0),
+('PEMILOS-2026-0005', 0),
+('PEMILOS-2026-0006', 0),
+('PEMILOS-2026-0007', 0),
+('PEMILOS-2026-0008', 0),
+('PEMILOS-2026-0009', 0),
+('PEMILOS-2026-001', 1),
+('PEMILOS-2026-0010', 0),
+('PEMILOS-2026-0011', 0),
+('PEMILOS-2026-0012', 0),
+('PEMILOS-2026-0013', 0),
+('PEMILOS-2026-0014', 0),
+('PEMILOS-2026-0015', 0),
+('PEMILOS-2026-0016', 0),
+('PEMILOS-2026-0017', 0),
+('PEMILOS-2026-0018', 0),
+('PEMILOS-2026-0019', 0),
+('PEMILOS-2026-002', 1),
+('PEMILOS-2026-0020', 0),
+('PEMILOS-2026-0021', 0),
+('PEMILOS-2026-0022', 0),
+('PEMILOS-2026-0023', 0),
+('PEMILOS-2026-0024', 0),
+('PEMILOS-2026-0025', 0),
+('PEMILOS-2026-0026', 0),
+('PEMILOS-2026-0027', 0),
+('PEMILOS-2026-0028', 0),
+('PEMILOS-2026-0029', 0),
+('PEMILOS-2026-003', 1),
+('PEMILOS-2026-0030', 0),
+('PEMILOS-2026-0031', 0),
+('PEMILOS-2026-0032', 0),
+('PEMILOS-2026-0033', 0),
+('PEMILOS-2026-0034', 0),
+('PEMILOS-2026-0035', 0),
+('PEMILOS-2026-0036', 0),
+('PEMILOS-2026-0037', 0),
+('PEMILOS-2026-0038', 0),
+('PEMILOS-2026-0039', 0),
+('PEMILOS-2026-0040', 0),
+('PEMILOS-2026-0041', 0),
+('PEMILOS-2026-0042', 0),
+('PEMILOS-2026-0043', 0),
+('PEMILOS-2026-0044', 0),
+('PEMILOS-2026-0045', 0),
+('PEMILOS-2026-0046', 0),
+('PEMILOS-2026-0047', 0),
+('PEMILOS-2026-0048', 0),
+('PEMILOS-2026-0049', 0),
+('PEMILOS-2026-0050', 0),
+('PEMILOS-2026-0051', 0),
+('PEMILOS-2026-0052', 0),
+('PEMILOS-2026-0053', 0),
+('PEMILOS-2026-0054', 0),
+('PEMILOS-2026-0055', 0),
+('PEMILOS-2026-0056', 0),
+('PEMILOS-2026-0057', 0),
+('PEMILOS-2026-0058', 0),
+('PEMILOS-2026-0059', 0),
+('PEMILOS-2026-0060', 0),
+('PEMILOS-2026-0061', 0),
+('PEMILOS-2026-0062', 0),
+('PEMILOS-2026-0063', 0),
+('PEMILOS-2026-0064', 0),
+('PEMILOS-2026-0065', 0),
+('PEMILOS-2026-0066', 0),
+('PEMILOS-2026-0067', 0),
+('PEMILOS-2026-0068', 0),
+('PEMILOS-2026-0069', 0),
+('PEMILOS-2026-0070', 0),
+('PEMILOS-2026-0071', 0),
+('PEMILOS-2026-0072', 0),
+('PEMILOS-2026-0073', 0),
+('PEMILOS-2026-0074', 0),
+('PEMILOS-2026-0075', 0),
+('PEMILOS-2026-0076', 0),
+('PEMILOS-2026-0077', 0),
+('PEMILOS-2026-0078', 0),
+('PEMILOS-2026-0079', 0),
+('PEMILOS-2026-0080', 0),
+('PEMILOS-2026-0081', 0),
+('PEMILOS-2026-0082', 0),
+('PEMILOS-2026-0083', 0),
+('PEMILOS-2026-0084', 0),
+('PEMILOS-2026-0085', 0),
+('PEMILOS-2026-0086', 0),
+('PEMILOS-2026-0087', 0),
+('PEMILOS-2026-0088', 0),
+('PEMILOS-2026-0089', 0),
+('PEMILOS-2026-0090', 0),
+('PEMILOS-2026-0091', 0),
+('PEMILOS-2026-0092', 0),
+('PEMILOS-2026-0093', 0),
+('PEMILOS-2026-0094', 0),
+('PEMILOS-2026-0095', 0),
+('PEMILOS-2026-0096', 0),
+('PEMILOS-2026-0097', 0),
+('PEMILOS-2026-0098', 0),
+('PEMILOS-2026-0099', 0),
+('PEMILOS-2026-0100', 0),
+('PEMILOS-2026-0101', 0),
+('PEMILOS-2026-0102', 0),
+('PEMILOS-2026-0103', 0),
+('PEMILOS-2026-0104', 0),
+('PEMILOS-2026-0105', 0),
+('PEMILOS-2026-0106', 0),
+('PEMILOS-2026-0107', 0),
+('PEMILOS-2026-0108', 0),
+('PEMILOS-2026-0109', 0),
+('PEMILOS-2026-0110', 0),
+('PEMILOS-2026-0111', 0),
+('PEMILOS-2026-0112', 0),
+('PEMILOS-2026-0113', 0),
+('PEMILOS-2026-0114', 0),
+('PEMILOS-2026-0115', 0),
+('PEMILOS-2026-0116', 0),
+('PEMILOS-2026-0117', 0),
+('PEMILOS-2026-0118', 0),
+('PEMILOS-2026-0119', 0),
+('PEMILOS-2026-0120', 0),
+('PEMILOS-2026-0121', 0),
+('PEMILOS-2026-0122', 0),
+('PEMILOS-2026-0123', 0),
+('PEMILOS-2026-0124', 0),
+('PEMILOS-2026-0125', 0),
+('PEMILOS-2026-0126', 0),
+('PEMILOS-2026-0127', 0),
+('PEMILOS-2026-0128', 0),
+('PEMILOS-2026-0129', 0),
+('PEMILOS-2026-0130', 0),
+('PEMILOS-2026-0131', 0),
+('PEMILOS-2026-0132', 0),
+('PEMILOS-2026-0133', 0),
+('PEMILOS-2026-0134', 0),
+('PEMILOS-2026-0135', 0),
+('PEMILOS-2026-0136', 0),
+('PEMILOS-2026-0137', 0),
+('PEMILOS-2026-0138', 0),
+('PEMILOS-2026-0139', 0),
+('PEMILOS-2026-0140', 0),
+('PEMILOS-2026-0141', 0),
+('PEMILOS-2026-0142', 0),
+('PEMILOS-2026-0143', 0),
+('PEMILOS-2026-0144', 0),
+('PEMILOS-2026-0145', 0),
+('PEMILOS-2026-0146', 0),
+('PEMILOS-2026-0147', 0),
+('PEMILOS-2026-0148', 0),
+('PEMILOS-2026-0149', 0),
+('PEMILOS-2026-0150', 0),
+('PEMILOS-2026-0151', 0),
+('PEMILOS-2026-0152', 0),
+('PEMILOS-2026-0153', 0),
+('PEMILOS-2026-0154', 0),
+('PEMILOS-2026-0155', 0),
+('PEMILOS-2026-0156', 0),
+('PEMILOS-2026-0157', 0),
+('PEMILOS-2026-0158', 0),
+('PEMILOS-2026-0159', 0),
+('PEMILOS-2026-0160', 0),
+('PEMILOS-2026-0161', 0),
+('PEMILOS-2026-0162', 0),
+('PEMILOS-2026-0163', 0),
+('PEMILOS-2026-0164', 0),
+('PEMILOS-2026-0165', 0),
+('PEMILOS-2026-0166', 0),
+('PEMILOS-2026-0167', 0),
+('PEMILOS-2026-0168', 0),
+('PEMILOS-2026-0169', 0),
+('PEMILOS-2026-0170', 0),
+('PEMILOS-2026-0171', 0),
+('PEMILOS-2026-0172', 0),
+('PEMILOS-2026-0173', 0),
+('PEMILOS-2026-0174', 0),
+('PEMILOS-2026-0175', 0),
+('PEMILOS-2026-0176', 0),
+('PEMILOS-2026-0177', 0),
+('PEMILOS-2026-0178', 0),
+('PEMILOS-2026-0179', 0),
+('PEMILOS-2026-0180', 0),
+('PEMILOS-2026-0181', 0),
+('PEMILOS-2026-0182', 0),
+('PEMILOS-2026-0183', 0),
+('PEMILOS-2026-0184', 0),
+('PEMILOS-2026-0185', 0),
+('PEMILOS-2026-0186', 0),
+('PEMILOS-2026-0187', 0),
+('PEMILOS-2026-0188', 0),
+('PEMILOS-2026-0189', 0),
+('PEMILOS-2026-0190', 0),
+('PEMILOS-2026-0191', 0),
+('PEMILOS-2026-0192', 0),
+('PEMILOS-2026-0193', 0),
+('PEMILOS-2026-0194', 0),
+('PEMILOS-2026-0195', 0),
+('PEMILOS-2026-0196', 0),
+('PEMILOS-2026-0197', 0),
+('PEMILOS-2026-0198', 0),
+('PEMILOS-2026-0199', 0),
+('PEMILOS-2026-0200', 0),
+('PEMILOS-2026-0201', 0),
+('PEMILOS-2026-0202', 0),
+('PEMILOS-2026-0203', 0),
+('PEMILOS-2026-0204', 0),
+('PEMILOS-2026-0205', 0),
+('PEMILOS-2026-0206', 0),
+('PEMILOS-2026-0207', 0),
+('PEMILOS-2026-0208', 0),
+('PEMILOS-2026-0209', 0),
+('PEMILOS-2026-0210', 0),
+('PEMILOS-2026-0211', 0),
+('PEMILOS-2026-0212', 0),
+('PEMILOS-2026-0213', 0),
+('PEMILOS-2026-0214', 0),
+('PEMILOS-2026-0215', 0),
+('PEMILOS-2026-0216', 0),
+('PEMILOS-2026-0217', 0),
+('PEMILOS-2026-0218', 0),
+('PEMILOS-2026-0219', 0),
+('PEMILOS-2026-0220', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `votes`
+--
+
+CREATE TABLE `votes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `candidate_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_synced` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `votes`
+--
+
+INSERT INTO `votes` (`id`, `token`, `candidate_id`, `created_at`, `is_synced`) VALUES
+(8, 'PEMILOS-2026-001', 3, '2026-09-28 10:56:05', 1),
+(9, 'PEMILOS-2026-003', 3, '2026-09-28 13:30:50', 1),
+(10, 'PEMILOS-2026-002', 2, '2026-09-28 14:23:25', 1),
+(12, 'https://me-qr.com/PGgHRqPW', 3, '2026-09-28 14:28:27', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `candidates`
+--
+ALTER TABLE `candidates`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `token_akses`
+--
+ALTER TABLE `token_akses`
+  ADD PRIMARY KEY (`token`);
+
+--
+-- Indexes for table `votes`
+--
+ALTER TABLE `votes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_vote_token` (`token`),
+  ADD KEY `fk_votes_candidate` (`candidate_id`),
+  ADD KEY `idx_votes_sync` (`is_synced`,`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `candidates`
+--
+ALTER TABLE `candidates`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `votes`
+--
+ALTER TABLE `votes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `votes`
+--
+ALTER TABLE `votes`
+  ADD CONSTRAINT `fk_votes_candidate` FOREIGN KEY (`candidate_id`) REFERENCES `candidates` (`id`),
+  ADD CONSTRAINT `fk_votes_token` FOREIGN KEY (`token`) REFERENCES `token_akses` (`token`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

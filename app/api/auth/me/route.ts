@@ -5,6 +5,7 @@ import { db } from '../../../../lib/db';
 
 interface TokenRecord extends RowDataPacket {
   sudah_memilih: number;
+  has_vote: number;
 }
 
 export async function GET() {
@@ -17,11 +18,13 @@ export async function GET() {
 
   try {
     const [rows] = await db.execute<TokenRecord[]>(
-      'SELECT sudah_memilih FROM token_akses WHERE token = ? LIMIT 1',
+      `SELECT sudah_memilih,
+        EXISTS (SELECT 1 FROM votes WHERE votes.token = token_akses.token) AS has_vote
+      FROM token_akses WHERE token = ? LIMIT 1`,
       [session.value]
     );
 
-    if (rows.length === 0 || Number(rows[0].sudah_memilih) === 1) {
+    if (rows.length === 0 || Number(rows[0].sudah_memilih) === 1 || Number(rows[0].has_vote) === 1) {
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
 

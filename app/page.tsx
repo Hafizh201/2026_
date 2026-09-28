@@ -29,20 +29,31 @@ const candidateDetails: Record<number, CandidateDetails> = {
 
 const candidateTone = (id: number) => id === 1 ? 'candidate-tone-blue' : id === 2 ? 'candidate-tone-coral' : 'candidate-tone-slate';
 
-const idleSlides = ['/images/slide-1.jpg', '/images/slide-2.jpg', '/images/slide-3.jpg'];
+const idleSlides = ['/images/1.JPG', '/images/2.JPG', '/images/3.JPG'];
 const timeoutSoundPath = '/sounds/pemilihan-berakhir.mp3';
 
 function IdleSlideshow({ onWake }: { onWake: () => void }) {
   const [slideIndex, setSlideIndex] = useState(0);
-  const [failedImage, setFailedImage] = useState<string | null>(null);
+  const [previousSlideIndex, setPreviousSlideIndex] = useState<number | null>(null);
+  const [failedImages, setFailedImages] = useState<string[]>([]);
+  const slideIndexRef = useRef(0);
   const currentSlide = idleSlides[slideIndex];
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setSlideIndex((index) => (index + 1) % idleSlides.length);
-    }, 5000);
+      const nextIndex = (slideIndexRef.current + 1) % idleSlides.length;
+      setPreviousSlideIndex(slideIndexRef.current);
+      slideIndexRef.current = nextIndex;
+      setSlideIndex(nextIndex);
+    }, 7000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (previousSlideIndex === null) return;
+    const timer = window.setTimeout(() => setPreviousSlideIndex(null), 1200);
+    return () => window.clearTimeout(timer);
+  }, [previousSlideIndex, slideIndex]);
 
   useEffect(() => {
     window.addEventListener('pointermove', onWake, { passive: true });
@@ -55,7 +66,20 @@ function IdleSlideshow({ onWake }: { onWake: () => void }) {
 
   return (
     <main className="idle-shell" aria-label="Tampilan siaga pemilihan">
-      {failedImage !== currentSlide ? (
+      {previousSlideIndex !== null && !failedImages.includes(idleSlides[previousSlideIndex]) && (
+        <Image
+          key={`previous-${previousSlideIndex}`}
+          src={idleSlides[previousSlideIndex]}
+          alt=""
+          fill
+          sizes="100vw"
+          unoptimized
+          className="idle-image idle-image-previous"
+        />
+      )}
+      {failedImages.includes(currentSlide) ? (
+        <div key={currentSlide} className="idle-image-fallback idle-image-current" aria-hidden="true" />
+      ) : (
         <Image
           key={currentSlide}
           src={currentSlide}
@@ -63,24 +87,10 @@ function IdleSlideshow({ onWake }: { onWake: () => void }) {
           fill
           sizes="100vw"
           unoptimized
-          className="idle-image"
-          onError={() => setFailedImage(currentSlide)}
+          className="idle-image idle-image-current"
+          onError={() => setFailedImages((images) => [...images, currentSlide])}
         />
-      ) : <div className="idle-image-fallback" aria-hidden="true" />}
-      <div className="idle-scrim" aria-hidden="true" />
-      <header className="idle-brand">
-        <span className="brand-symbol"><Vote size={20} strokeWidth={1.8} /></span>
-        <span className="brand-copy"><span className="brand-name">PEMILOS</span><span className="brand-school">SMPIT Abu Bakar Fullday School</span></span>
-      </header>
-      <section className="idle-prompt" aria-live="polite">
-        <p className="eyebrow">PILKETOS 2025 · LAYAR SIAGA</p>
-        <h1>Suara Anda<br /><span>menentukan masa depan.</span></h1>
-        <p>Sentuh layar atau gerakkan mouse untuk memulai.</p>
-        <div className="idle-slide-status">
-          <span>{String(slideIndex + 1).padStart(2, '0')} / {String(idleSlides.length).padStart(2, '0')}</span>
-          <span className="idle-progress"><span key={slideIndex} className="idle-progress-fill" /></span>
-        </div>
-      </section>
+      )}
     </main>
   );
 }
