@@ -357,7 +357,7 @@ export default function Home() {
       <main className="app-shell flex min-h-screen items-center justify-center px-4 py-12">
         <section className="success-panel motion-enter w-full max-w-lg text-center">
           <div className="success-mark mx-auto mb-6"><Check size={30} strokeWidth={2.5} /></div>
-          <p className="eyebrow mb-3">PILKETOS 2025 · SUARA TERCATAT</p>
+          <p className="eyebrow mb-3">PILKETOS 2026 · SUARA TERCATAT</p>
           <h1 className="mb-3 text-3xl font-semibold text-ink sm:text-4xl">{voteWasAlreadyRecorded ? 'Suara sudah tercatat.' : 'Terima kasih sudah memilih.'}</h1>
           <p className="mx-auto max-w-sm text-sm leading-6 text-muted">{voteWasAlreadyRecorded ? 'Token ini telah memiliki suara tercatat sebelumnya. Pilihan tidak dapat diubah.' : 'Pilihan Anda telah direkam dengan aman dan tidak dapat diubah kembali.'}</p>
           <p className="success-exit-note">Silakan meninggalkan bilik pemilihan untuk memberi kesempatan kepada pemilih berikutnya.</p>

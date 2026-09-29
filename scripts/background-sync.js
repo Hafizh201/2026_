@@ -205,11 +205,6 @@ async function syncData() {
       const cloudRow = cloudRowsByToken.get(row.token);
       return !cloudRow || !rowsMatch(row, cloudRow);
     });
-    const localTokens = new Set(localRows.map((row) => row.token));
-    const cloudOnlyRows = isFullReconcile
-      ? cloudRows.filter((row) => !localTokens.has(row.token))
-      : [];
-
     const uploadBatches = splitIntoBatches(differences, batchSize);
     for (const [index, batch] of uploadBatches.entries()) {
       if (index === 0) log(`Ditemukan ${differences.length} perbedaan; mulai mengunggah ke Supabase.`);
@@ -220,26 +215,8 @@ async function syncData() {
       if (error) throw error;
     }
 
-    let deletedCloudRows = 0;
-    const deleteBatches = splitIntoBatches(cloudOnlyRows, batchSize);
-    if (deleteBatches.length > 0) {
-      log(`Ditemukan ${cloudOnlyRows.length} suara yang sudah dihapus dari lokal; menghapus salinannya di Supabase.`);
-    }
-    for (const [index, batch] of deleteBatches.entries()) {
-      const tokens = batch.map((row) => row.token);
-      if (deleteBatches.length > 1) log(`Menghapus batch ${index + 1}/${deleteBatches.length} (${batch.length} suara)...`);
-      const { data, error } = await supabase
-        .from('hasil_suara')
-        .delete()
-        .in('token', tokens)
-        .select('token');
-      if (error) throw error;
-      deletedCloudRows += data?.length || 0;
-    }
-
     const updatedLocalRows = await markLocalRowsSynced(connection, localRows);
     if (differences.length > 0) log(`${differences.length} suara berhasil disamakan ke Supabase.`);
-    if (deletedCloudRows > 0) log(`${deletedCloudRows} suara yang dihapus dari lokal berhasil dihapus dari Supabase.`);
     if (updatedLocalRows > 0 && differences.length === 0) log(`${updatedLocalRows} suara lokal yang sudah cocok ditandai tersinkron.`);
 
     if (lastErrorKey) log('Koneksi pulih; sinkronisasi dilanjutkan.');

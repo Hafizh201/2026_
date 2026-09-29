@@ -158,7 +158,7 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
         <div className="site-header-inner">
           <div className="brand-lockup">
             <SchoolLogo />
-            <span className="brand-copy"><span className="brand-name">Pilketos 2025</span><span className="brand-school">SMPIT Abu Bakar Fullday School</span></span>
+            <span className="brand-copy"><span className="brand-name">Pilketos 2026</span><span className="brand-school">SMPIT Abu Bakar Fullday School</span></span>
           </div>
           <div className="session-indicator"><ShieldCheck size={15} /><span>AKSES PEMILIH</span></div>
         </div>
@@ -166,7 +166,7 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
 
       <div className="qr-layout qr-layout-simple">
         <section className="qr-copy qr-copy-simple">
-          <p className="eyebrow">PILKETOS 2025 <span>·</span> GERBANG PEMILIHAN</p>
+          <p className="eyebrow">PILKETOS 2026 <span></span></p>
           <h1>Silakan pindai<br /><span>QR pemilih.</span></h1>
           <p>Gunakan kode QR yang diberikan panitia untuk membuka surat suara digital.</p>
         </section>
@@ -186,7 +186,7 @@ export const QRLogin: React.FC<QRLoginProps> = ({ onLoginSuccess }) => {
         </section>
       </div>
 
-      <footer className="site-footer"><span>PILKETOS 2025</span><span>PEMILIHAN KETUA OSIS</span><span>AKSES AMAN</span></footer>
+      <footer className="site-footer"><span>PILKETOS 2025</span><span>PEMILIHAN KETUA OSIS</span><span></span></footer>
 
       {modal.isOpen && <div className={`auth-modal-backdrop ${modal.type === 'error' || isEnteringVote ? 'is-dialog' : ''}`}><section className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title"><div className={`auth-modal-symbol ${modal.type === 'error' || modal.type === 'permission' ? 'is-error' : 'is-success'}`}>{modal.type === 'error' || modal.type === 'permission' ? <AlertCircle size={27} /> : <CheckCircle2 size={27} />}</div>{isEnteringVote && <span className="auth-modal-loading" role="status" aria-label="Memuat surat suara" />}<h2 id="auth-modal-title">{modal.type === 'success' ? 'Akses diberikan' : modal.type === 'permission' ? 'Kamera belum tersedia' : 'QR belum terverifikasi'}</h2><p>{modal.message}</p>{(modal.type === 'error' || modal.type === 'permission') && <button type="button" onClick={closeModal} className="confirm-button">Tutup dan coba lagi</button>}</section></div>}
     </main>

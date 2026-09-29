@@ -6,7 +6,7 @@ const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 const ibmPlexMono = IBM_Plex_Mono({ variable: "--font-ibm-plex-mono", subsets: ["latin"], weight: ["400", "500"] });
 
 export const metadata: Metadata = {
-  title: "Pilketos 2025",
+  title: "Pilketos 2026 - SMPIT Abu Bakar Fullday School",
   description: "Sistem Pemilihan Ketua OSIS",
 };
 
